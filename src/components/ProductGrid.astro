@@ -166,6 +166,28 @@ const products = [
     externalUrl: 'https://tonaridesign.base.shop/items/56593827',
   },
 ];
+
+// Grid pattern for asymmetric layout - cycle through varied sizes
+const gridPatterns = [
+  { size: 'large' },   // 0: Featured - spans 2x2
+  { size: 'normal' },  // 1: Standard
+  { size: 'tall' },    // 2: Tall - spans 1x2
+  { size: 'normal' },  // 3: Standard
+  { size: 'wide' },    // 4: Wide - spans 2x1
+  { size: 'normal' },  // 5: Standard
+  { size: 'normal' },  // 6: Standard
+  { size: 'tall' },    // 7: Tall
+  { size: 'normal' },  // 8: Standard
+  { size: 'large' },   // 9: Featured
+  { size: 'normal' },  // 10: Standard
+  { size: 'normal' },  // 11: Standard
+];
+
+// Assign grid sizes to products
+const productsWithLayout = products.map((product, index) => ({
+  ...product,
+  gridSize: gridPatterns[index % gridPatterns.length].size,
+}));
 ---
 
 <section class="products-section">
@@ -196,9 +218,9 @@ const products = [
     </div>
   </div>
 
-  <!-- Product grid -->
+  <!-- Product grid - asymmetric layout -->
   <div class="product-grid" data-product-grid>
-    {products.map((product, index) => (
+    {productsWithLayout.map((product, index) => (
       <ProductCard {...product} index={index} />
     ))}
   </div>
@@ -307,11 +329,12 @@ const products = [
     letter-spacing: 0.05em;
   }
 
-  /* Product grid */
+  /* Product grid - Asymmetric 4-column layout */
   .product-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: minmax(280px, auto);
+    gap: 1.25rem;
     margin-bottom: 4rem;
   }
 
@@ -370,9 +393,17 @@ const products = [
   }
 
   /* Responsive */
+  @media (max-width: 1200px) {
+    .product-grid {
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: minmax(260px, auto);
+    }
+  }
+
   @media (max-width: 1024px) {
     .product-grid {
       grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: minmax(240px, auto);
     }
   }
 
@@ -388,6 +419,7 @@ const products = [
 
     .product-grid {
       grid-template-columns: 1fr;
+      grid-auto-rows: auto;
       gap: 1rem;
     }
   }

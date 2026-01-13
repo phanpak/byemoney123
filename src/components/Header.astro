@@ -88,9 +88,13 @@ const menuLinks = [
   <div class="menu-content">
     <nav class="menu-nav">
       {menuLinks.map((link, i) => (
-        <a href={link.href} class="menu-link" style={`--i: ${i}`} data-magnetic>
+        <a href={link.href} class="menu-link" style={`--link-i: ${i}`} data-magnetic>
           <span class="menu-link-index">0{i + 1}</span>
-          <span class="menu-link-text">{link.label}</span>
+          <span class="menu-link-text">
+            {link.label.split('').map((char, charIndex) => (
+              <span class="menu-char" style={`--char-i: ${charIndex}`}>{char}</span>
+            ))}
+          </span>
           <span class="menu-link-arrow">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -464,9 +468,13 @@ const menuLinks = [
   }
 
   .menu-overlay.open .menu-backdrop {
-    opacity: 0.92;
-    backdrop-filter: blur(20px) saturate(0.7);
-    -webkit-backdrop-filter: blur(20px) saturate(0.7);
+    opacity: 0.95;
+    backdrop-filter: blur(30px) saturate(0.7);
+    -webkit-backdrop-filter: blur(30px) saturate(0.7);
+  }
+
+  :global([data-theme="light"]) .menu-overlay.open .menu-backdrop {
+    opacity: 0.97;
   }
 
   .menu-content {
@@ -490,16 +498,12 @@ const menuLinks = [
     gap: 2rem;
     padding: 1.5rem 0;
     color: var(--color-cream);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.6s var(--ease-out-expo);
-    transition-delay: calc(var(--i) * 0.08s);
+    border-bottom: 1px solid rgba(245, 240, 232, 0.06);
+    transition: padding 0.6s var(--ease-out-expo);
   }
 
-  .menu-overlay.open .menu-link {
-    opacity: 1;
-    transform: translateY(0);
+  :global([data-theme="light"]) .menu-link {
+    border-bottom-color: rgba(26, 26, 26, 0.1);
   }
 
   .menu-link:hover {
@@ -510,7 +514,15 @@ const menuLinks = [
     font-family: var(--font-display);
     font-size: 0.875rem;
     color: var(--color-gold);
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.5s var(--ease-out-expo);
+    transition-delay: calc(var(--link-i) * 0.1s + 0.2s);
+  }
+
+  .menu-overlay.open .menu-link-index {
     opacity: 0.6;
+    transform: translateX(0);
   }
 
   .menu-link-text {
@@ -519,22 +531,55 @@ const menuLinks = [
     font-weight: 500;
     letter-spacing: -0.03em;
     flex: 1;
-    transition: color 0.3s ease;
+    overflow: hidden;
+    perspective: 1000px;
   }
 
-  .menu-link:hover .menu-link-text {
+  /* Theatrical split-char animation */
+  .menu-char {
+    display: inline-block;
+    transform: translateY(120%) rotateX(-80deg);
+    transform-origin: center bottom;
+    opacity: 0;
+    transition: all 0.6s var(--ease-out-expo);
+    transition-delay: calc(var(--link-i) * 0.1s + var(--char-i) * 0.03s);
+    transform-style: preserve-3d;
+  }
+
+  .menu-overlay.open .menu-char {
+    transform: translateY(0) rotateX(0);
+    opacity: 1;
+  }
+
+  /* Hover effect - chars lift and glow */
+  .menu-link:hover .menu-char {
     color: var(--color-gold);
+    transform: translateY(-4px) rotateX(0);
+    transition-delay: calc(var(--char-i) * 0.015s);
+    text-shadow: 0 4px 20px rgba(201, 162, 39, 0.3);
+  }
+
+  /* Stagger hover effect for more drama */
+  .menu-link:hover .menu-char:nth-child(odd) {
+    transform: translateY(-6px) rotateX(0);
   }
 
   .menu-link-arrow {
     opacity: 0;
-    transform: translate(-20px, 20px);
-    transition: all 0.4s var(--ease-out-expo);
+    transform: translate(-20px, 20px) rotate(-45deg);
+    transition: all 0.5s var(--ease-out-expo);
+    transition-delay: calc(var(--link-i) * 0.1s + 0.4s);
+  }
+
+  .menu-overlay.open .menu-link-arrow {
+    opacity: 0.3;
+    transform: translate(0, 0) rotate(0);
   }
 
   .menu-link:hover .menu-link-arrow {
     opacity: 1;
-    transform: translate(0, 0);
+    transform: translate(5px, -5px) rotate(0);
+    color: var(--color-gold);
   }
 
   .menu-footer {
@@ -596,6 +641,12 @@ const menuLinks = [
 </style>
 
 <script>
+  // Move menu overlay to body to ensure fixed positioning works
+  const menuOverlay = document.querySelector('[data-menu-overlay]');
+  if (menuOverlay) {
+    document.body.appendChild(menuOverlay);
+  }
+
   // Theme toggle
   const themeToggle = document.querySelector('[data-theme-toggle]');
   const html = document.documentElement;
@@ -635,9 +686,8 @@ const menuLinks = [
     }
   });
 
-  // Menu toggle
+  // Menu toggle (menuOverlay already declared at top of script)
   const menuTrigger = document.querySelector('[data-menu-trigger]');
-  const menuOverlay = document.querySelector('[data-menu-overlay]');
 
   menuTrigger?.addEventListener('click', () => {
     const isOpen = menuOverlay?.classList.toggle('open');

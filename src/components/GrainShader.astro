@@ -1,0 +1,104 @@
+---
+// Animated Grain Shader - Adds film-like texture for premium feel
+// Uses Canvas2D for performance, animates at 24fps (cinematic)
+---
+
+<canvas id="grain-canvas" class="grain-canvas" aria-hidden="true"></canvas>
+
+<style>
+  .grain-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9998;
+    mix-blend-mode: overlay;
+    opacity: 0.35;
+  }
+
+  /* Reduce opacity in light mode for readability */
+  :global([data-theme="light"]) .grain-canvas {
+    opacity: 0.15;
+    mix-blend-mode: multiply;
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .grain-canvas {
+      display: none;
+    }
+  }
+
+  /* Hide on mobile for performance */
+  @media (max-width: 768px) {
+    .grain-canvas {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Grain shader - creates animated film grain effect
+  const canvas = document.getElementById('grain-canvas') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d', { alpha: true });
+
+  if (ctx) {
+    // Set canvas size to match viewport
+    function resize() {
+      // Use lower resolution for performance (1/3 of actual size)
+      const scale = 0.33;
+      canvas.width = window.innerWidth * scale;
+      canvas.height = window.innerHeight * scale;
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+    }
+
+    // Generate noise frame
+    function generateNoise() {
+      const imageData = ctx!.createImageData(canvas.width, canvas.height);
+      const data = imageData.data;
+
+      for (let i = 0; i < data.length; i += 4) {
+        // Random grayscale value
+        const value = Math.random() * 255;
+
+        // R, G, B channels
+        data[i] = value;
+        data[i + 1] = value;
+        data[i + 2] = value;
+
+        // Alpha channel - subtle opacity variation
+        data[i + 3] = 20 + Math.random() * 15;
+      }
+
+      ctx!.putImageData(imageData, 0, 0);
+    }
+
+    // Initialize
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Animate at ~24fps for cinematic feel (41.67ms interval)
+    let lastFrame = 0;
+    const frameInterval = 41.67;
+
+    function animate(timestamp: number) {
+      if (timestamp - lastFrame >= frameInterval) {
+        generateNoise();
+        lastFrame = timestamp;
+      }
+      requestAnimationFrame(animate);
+    }
+
+    // Start animation after page load
+    requestAnimationFrame(animate);
+
+    // Pause when tab is not visible for performance
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        // Paused state handled by requestAnimationFrame naturally
+      }
+    });
+  }
+</script>

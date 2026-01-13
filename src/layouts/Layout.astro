@@ -1,5 +1,6 @@
 ---
 import Cursor from '../components/Cursor.astro';
+import GrainShader from '../components/GrainShader.astro';
 
 interface Props {
   title?: string;
@@ -67,6 +68,9 @@ const { title = 'bye money' } = Astro.props;
     <!-- Custom cursor -->
     <Cursor />
 
+    <!-- Animated grain shader for film texture -->
+    <GrainShader />
+
     <!-- Page content -->
     <div class="page-wrapper" id="page-wrapper">
       <slot />
@@ -75,10 +79,31 @@ const { title = 'bye money' } = Astro.props;
     <!-- GSAP for premium animations -->
     <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <!-- Lenis smooth scroll -->
+    <script is:inline src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 
     <script is:inline>
       // Register GSAP plugins
       gsap.registerPlugin(ScrollTrigger);
+
+      // Initialize Lenis smooth scroll
+      var lenis = new Lenis({
+        duration: 1.4,
+        easing: function(t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+        smoothWheel: true,
+        wheelMultiplier: 1,
+        touchMultiplier: 2,
+        infinite: false
+      });
+
+      // Connect Lenis to GSAP ScrollTrigger
+      lenis.on('scroll', ScrollTrigger.update);
+
+      gsap.ticker.add(function(time) {
+        lenis.raf(time * 1000);
+      });
+
+      gsap.ticker.lagSmoothing(0);
 
       // Elements
       var loader = document.getElementById('loader');
@@ -296,6 +321,215 @@ const { title = 'bye money' } = Astro.props;
           });
         });
 
+        // ENHANCED HERO PARALLAX - Each element at different speeds creates depth
+        var hero = document.querySelector('.hero');
+        var heroLines = document.querySelectorAll('[data-hero-line]');
+        var heroTagline = document.querySelector('.hero-tagline');
+        var heroScroll = document.querySelector('.hero-scroll');
+        var heroAccents = document.querySelectorAll('.hero-accent');
+        var heroBgElements = document.querySelectorAll('.hero-bg > div');
+
+        if (hero) {
+          // Each hero line exits at different speed for parallax depth
+          heroLines.forEach(function(line, i) {
+            var speed = parseFloat(line.getAttribute('data-parallax-speed') || '1');
+            gsap.to(line, {
+              yPercent: -100 * speed,
+              opacity: 0,
+              scale: 1 + (i * 0.05),
+              ease: 'none',
+              scrollTrigger: {
+                trigger: hero,
+                start: 'top top',
+                end: 'bottom top',
+                scrub: 1.2 + (i * 0.3)
+              }
+            });
+          });
+
+          // Tagline exits slower - feels like it's further back
+          if (heroTagline) {
+            var taglineSpeed = parseFloat(heroTagline.getAttribute('data-parallax-speed') || '0.5');
+            gsap.to(heroTagline, {
+              yPercent: -60 * taglineSpeed,
+              opacity: 0,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: hero,
+                start: 'top top',
+                end: '70% top',
+                scrub: 1
+              }
+            });
+          }
+
+          // Scroll indicator fades first
+          if (heroScroll) {
+            gsap.to(heroScroll, {
+              opacity: 0,
+              y: -20,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: hero,
+                start: 'top top',
+                end: '25% top',
+                scrub: 0.5
+              }
+            });
+          }
+
+          // Background elements - slowest, creates depth
+          heroBgElements.forEach(function(el) {
+            var speed = parseFloat(el.getAttribute('data-parallax-speed') || '0.2');
+            gsap.to(el, {
+              yPercent: -30 * speed,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: hero,
+                start: 'top top',
+                end: 'bottom top',
+                scrub: 2
+              }
+            });
+          });
+
+          // Floating accents drift at different speeds
+          heroAccents.forEach(function(accent, i) {
+            var speed = parseFloat(accent.getAttribute('data-parallax-speed') || '0.3');
+            var direction = i % 2 === 0 ? 1 : -1;
+            gsap.to(accent, {
+              yPercent: -50 * speed,
+              xPercent: 20 * direction * speed,
+              scale: 1.2,
+              opacity: 0,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: hero,
+                start: 'top top',
+                end: 'bottom top',
+                scrub: 1.5 + (i * 0.2)
+              }
+            });
+          });
+        }
+
+        // SECTION HEADER REVEALS - Dramatic entrance
+        var sectionHeaders = document.querySelectorAll('.section-header');
+        sectionHeaders.forEach(function(header) {
+          var left = header.querySelector('.section-header-left');
+          var right = header.querySelector('.section-header-right');
+
+          if (left) {
+            gsap.fromTo(left,
+              { x: -60, opacity: 0 },
+              {
+                x: 0,
+                opacity: 1,
+                duration: 1,
+                ease: 'power3.out',
+                scrollTrigger: {
+                  trigger: header,
+                  start: 'top 80%',
+                  toggleActions: 'play none none reverse'
+                }
+              }
+            );
+          }
+
+          if (right) {
+            gsap.fromTo(right,
+              { x: 60, opacity: 0 },
+              {
+                x: 0,
+                opacity: 1,
+                duration: 1,
+                delay: 0.15,
+                ease: 'power3.out',
+                scrollTrigger: {
+                  trigger: header,
+                  start: 'top 80%',
+                  toggleActions: 'play none none reverse'
+                }
+              }
+            );
+          }
+        });
+
+        // PRODUCT GRID STAGGERED REVEAL - Cards cascade in
+        var productGrid = document.querySelector('.product-grid');
+        if (productGrid) {
+          // Pin section title while scrolling through products
+          var sectionLabel = document.querySelector('.section-label');
+          if (sectionLabel) {
+            ScrollTrigger.create({
+              trigger: '.products-section',
+              start: 'top 10%',
+              end: 'bottom 60%',
+              onUpdate: function(self) {
+                var progress = self.progress;
+                sectionLabel.style.transform = 'translateY(' + (progress * 30) + 'px)';
+                sectionLabel.style.opacity = 1 - (progress * 0.5);
+              }
+            });
+          }
+        }
+
+        // AMBIENT BACKGROUND PARALLAX - Gradient orbs drift on scroll
+        var gradientOrbs = document.querySelectorAll('.gradient-orb');
+        gradientOrbs.forEach(function(orb, i) {
+          var speed = 0.1 + (i * 0.05);
+          var direction = i % 2 === 0 ? 1 : -1;
+          gsap.to(orb, {
+            yPercent: -100 * speed,
+            xPercent: 30 * direction * speed,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: 'body',
+              start: 'top top',
+              end: 'bottom bottom',
+              scrub: 3
+            }
+          });
+        });
+
+        // NEWSLETTER SECTION - Dramatic reveal
+        var newsletter = document.querySelector('.newsletter');
+        if (newsletter) {
+          gsap.fromTo(newsletter,
+            { scale: 0.9, opacity: 0 },
+            {
+              scale: 1,
+              opacity: 1,
+              duration: 1.2,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: newsletter,
+                start: 'top 85%',
+                toggleActions: 'play none none reverse'
+              }
+            }
+          );
+        }
+
+        // FOOTER REVEAL - Slides up from below
+        var footer = document.querySelector('.footer');
+        if (footer) {
+          gsap.fromTo(footer,
+            { y: 60, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 1,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: footer,
+                start: 'top 95%',
+                toggleActions: 'play none none reverse'
+              }
+            }
+          );
+        }
+
         // SCROLL VELOCITY TEXT BLUR - Cinematic motion blur on fast scroll
         var lastScrollY = window.scrollY;
         var lastScrollTime = Date.now();
@@ -458,19 +692,17 @@ const { title = 'bye money' } = Astro.props;
     z-index: 0;
   }
 
-  /* Page wrapper */
+  /* Page wrapper - using clip-path for entrance instead of transform to preserve fixed positioning */
   .page-wrapper {
     position: relative;
     z-index: 1;
     opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 1s var(--ease-out-expo), transform 1s var(--ease-out-expo);
+    transition: opacity 1s var(--ease-out-expo);
     transition-delay: 0.3s;
   }
 
   .page-wrapper.loaded {
     opacity: 1;
-    transform: translateY(0);
   }
 
   /* Cinematic Split Reveal Overlays */
