@@ -7,9 +7,12 @@ dist/
 
 # Claude Code
 .claude/
+.claude*
 
-# Playwright
+# MCP
 .playwright-mcp/
+*-mcp/
+.mcp*
 
 # Environment
 .env

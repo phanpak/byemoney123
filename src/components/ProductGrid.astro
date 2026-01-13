@@ -168,73 +168,227 @@ const products = [
 ];
 ---
 
-<section class="product-grid-section">
+<section class="products-section">
+  <!-- Section header -->
+  <div class="section-header" data-animate>
+    <div class="section-header-left">
+      <span class="section-label">The Collection</span>
+      <h2 class="section-title">
+        <span class="section-title-line">Selected</span>
+        <span class="section-title-line section-title-line--accent">Products</span>
+      </h2>
+    </div>
+    <div class="section-header-right">
+      <p class="section-description">
+        A curated selection of products that deserve your attention.
+        Quality over quantity, always.
+      </p>
+      <div class="section-stats">
+        <div class="stat">
+          <span class="stat-number">{products.length}</span>
+          <span class="stat-label">Items</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">9</span>
+          <span class="stat-label">Categories</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product grid -->
   <div class="product-grid" data-product-grid>
-    {products.map((product) => (
-      <ProductCard {...product} />
+    {products.map((product, index) => (
+      <ProductCard {...product} index={index} />
     ))}
   </div>
-  <button class="load-more" data-load-more>
-    <span>Load More items</span>
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </button>
+
+  <!-- Load more button -->
+  <div class="load-more-wrapper" data-animate>
+    <button class="load-more" data-load-more data-magnetic>
+      <span class="load-more-text">Load More Items</span>
+      <span class="load-more-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M10 4V16M10 16L5 11M10 16L15 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </button>
+  </div>
 </section>
 
 <style>
-  .product-grid-section {
-    padding: 0 var(--spacing-xl);
+  .products-section {
+    padding: calc(var(--header-height, 80px) + 2rem) 2rem 6rem;
+    max-width: 1600px;
+    margin: 0 auto;
   }
 
+  /* Section header */
+  .section-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 4rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid rgba(245, 240, 232, 0.06);
+  }
+
+  .section-label {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    padding: 0.5rem 1rem;
+    background: var(--color-gold-muted);
+    border-radius: var(--radius-full);
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 600;
+    color: var(--color-cream);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin: 0;
+  }
+
+  .section-title-line {
+    display: block;
+  }
+
+  .section-title-line--accent {
+    -webkit-text-stroke: 1px var(--color-cream);
+    -webkit-text-fill-color: transparent;
+  }
+
+  .section-header-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .section-description {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    max-width: 400px;
+    margin-bottom: 2rem;
+  }
+
+  .section-stats {
+    display: flex;
+    gap: 3rem;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .stat-number {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: var(--color-cream);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* Product grid */
   .product-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--spacing-lg);
-    margin-bottom: var(--spacing-xl);
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+
+  /* Load more button */
+  .load-more-wrapper {
+    display: flex;
+    justify-content: center;
   }
 
   .load-more {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: var(--spacing-sm);
-    width: 100%;
-    padding: var(--spacing-md) var(--spacing-xl);
-    background: linear-gradient(90deg, var(--color-gray-300) 0%, var(--color-gray-400) 50%, var(--color-gray-300) 100%);
+    gap: 1rem;
+    padding: 1rem 2.5rem;
+    background: transparent;
+    border: 1px solid rgba(245, 240, 232, 0.15);
     border-radius: var(--radius-full);
-    font-size: 14px;
+    color: var(--color-cream);
     font-family: var(--font-body);
-    color: var(--color-gray-700);
-    transition: all var(--transition-normal);
-    background-size: 200% 100%;
-    animation: shimmer 2s infinite;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    transition: all 0.4s var(--ease-out-expo);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .load-more::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--color-gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s var(--ease-out-expo);
+    z-index: -1;
+  }
+
+  .load-more:hover::before {
+    transform: scaleX(1);
   }
 
   .load-more:hover {
-    background: var(--color-gray-400);
-    animation: none;
+    border-color: var(--color-gold);
+    color: var(--color-bg);
   }
 
-  @keyframes shimmer {
-    0% { background-position: 100% 0; }
-    100% { background-position: -100% 0; }
+  .load-more-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.4s var(--ease-out-expo);
   }
 
+  .load-more:hover .load-more-icon {
+    transform: translateY(4px);
+  }
+
+  /* Responsive */
   @media (max-width: 1024px) {
     .product-grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }
 
-  @media (max-width: 640px) {
-    .product-grid-section {
-      padding: 0 var(--spacing-md);
+  @media (max-width: 768px) {
+    .products-section {
+      padding: 3rem 1.5rem 4rem;
+    }
+
+    .section-header {
+      grid-template-columns: 1fr;
+      gap: 2rem;
     }
 
     .product-grid {
       grid-template-columns: 1fr;
-      gap: var(--spacing-md);
+      gap: 1rem;
     }
   }
 </style>
@@ -247,7 +401,7 @@ const products = [
 
     cards.forEach(card => {
       const cardCategory = card.getAttribute('data-category');
-      if (category === 'all' || cardCategory === category) {
+      if (category === 'all' || cardCategory?.toLowerCase() === category.toLowerCase()) {
         card.classList.remove('hidden');
       } else {
         card.classList.add('hidden');
