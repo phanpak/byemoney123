@@ -1,0 +1,353 @@
+---
+interface Props {
+  name: string;
+  brand: string;
+  price: string;
+  category: string;
+  image: string;
+  slug: string;
+  externalUrl: string;
+}
+
+const { name, brand, price, category, image, slug, externalUrl } = Astro.props;
+---
+
+<article class="product-card" data-category={category.toLowerCase()}>
+  <!-- SVG filter for noise texture -->
+  <svg class="noise-svg" aria-hidden="true">
+    <filter id="noise-filter">
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.7"
+        numOctaves="4"
+        stitchTiles="stitch"
+        result="noise"
+      />
+      <feColorMatrix
+        type="saturate"
+        values="0"
+        in="noise"
+        result="mono"
+      />
+      <feBlend
+        in="SourceGraphic"
+        in2="mono"
+        mode="multiply"
+        result="blend"
+      />
+    </filter>
+  </svg>
+
+  <!-- Background layers -->
+  <div class="card-bg">
+    <!-- Base gray background -->
+    <div class="bg-base"></div>
+
+    <!-- Radial gradient overlay (appears on hover) -->
+    <div class="bg-gradient"></div>
+
+    <!-- Film grain texture overlay -->
+    <div class="bg-grain"></div>
+  </div>
+
+  <!-- Category tag (top left) -->
+  <span class="category-tag">{category}</span>
+
+  <!-- External link button (top right) -->
+  <a
+    href={externalUrl}
+    class="external-link"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label={`Buy ${name}`}
+  >
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+      <path d="M4 10L10 4M10 4H5M10 4V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </a>
+
+  <!-- Main clickable area -->
+  <a href={`./item/${slug}`} class="card-link">
+    <!-- Product image with shadow -->
+    <div class="image-container">
+      <div class="image-shadow"></div>
+      <img src={image} alt={`${brand} ${name}`} loading="lazy" />
+    </div>
+
+    <!-- Product info (bottom) -->
+    <div class="card-info">
+      <span class="brand">{brand}</span>
+      <div class="name-row">
+        <h3 class="name">{name}</h3>
+        <span class="price">{price}</span>
+      </div>
+    </div>
+  </a>
+</article>
+
+<style>
+  .product-card {
+    position: relative;
+    border-radius: 24px;
+    aspect-ratio: 1;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  /* Hidden SVG for filter definition */
+  .noise-svg {
+    position: absolute;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+
+  /* ===== BACKGROUND LAYERS ===== */
+  .card-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: 24px;
+  }
+
+  .bg-base {
+    position: absolute;
+    inset: 0;
+    background: #ebebeb;
+  }
+
+  /* Radial gradient - the KEY to the warm glow effect */
+  .bg-gradient {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(
+        ellipse 80% 70% at 50% 55%,
+        #ffd54f 0%,
+        #ffca28 20%,
+        #ffc107 35%,
+        #f5bf4f 50%,
+        #e8c77b 65%,
+        #ddc99a 80%,
+        #d4c4a8 100%
+      );
+    opacity: 0;
+    transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .product-card:hover .bg-gradient {
+    opacity: 1;
+  }
+
+  /* Film grain texture - THE critical detail */
+  .bg-grain {
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    animation: grain-shift 0.5s steps(1) infinite;
+  }
+
+  .product-card:hover .bg-grain {
+    opacity: 0.35;
+  }
+
+  @keyframes grain-shift {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(-2%, -2%); }
+    50% { transform: translate(2%, 2%); }
+    75% { transform: translate(-1%, 1%); }
+  }
+
+  /* ===== CATEGORY TAG ===== */
+  .category-tag {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 13px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    color: #1a1a1a;
+    z-index: 20;
+    opacity: 0;
+    transform: translateY(-12px);
+    transition:
+      opacity 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+      transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    transition-delay: 0.05s;
+  }
+
+  .product-card:hover .category-tag {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===== EXTERNAL LINK BUTTON ===== */
+  .external-link {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 50%;
+    color: #333;
+    z-index: 20;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition:
+      transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+      background 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .external-link:hover {
+    background: #000;
+    color: #fff;
+    transform: scale(1.1);
+  }
+
+  /* ===== CARD LINK (main clickable area) ===== */
+  .card-link {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    z-index: 10;
+  }
+
+  /* ===== IMAGE CONTAINER ===== */
+  .image-container {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .product-card:hover .image-container {
+    transform: translateY(-35px);
+  }
+
+  /* Product shadow - appears on hover */
+  .image-shadow {
+    position: absolute;
+    bottom: 15%;
+    left: 50%;
+    width: 60%;
+    height: 20px;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(0, 0, 0, 0.25) 0%,
+      rgba(0, 0, 0, 0.1) 40%,
+      transparent 70%
+    );
+    transform: translateX(-50%);
+    border-radius: 50%;
+    opacity: 0;
+    filter: blur(8px);
+    transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .product-card:hover .image-shadow {
+    opacity: 1;
+  }
+
+  .image-container img {
+    max-width: 70%;
+    max-height: 70%;
+    object-fit: contain;
+    position: relative;
+    z-index: 2;
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    /* Add subtle shadow to product */
+    filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.12));
+  }
+
+  .product-card:hover .image-container img {
+    transform: scale(1.05);
+    filter: drop-shadow(0 12px 32px rgba(0, 0, 0, 0.18));
+  }
+
+  /* ===== CARD INFO ===== */
+  .card-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    z-index: 15;
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity 0.45s cubic-bezier(0.23, 1, 0.32, 1),
+      transform 0.45s cubic-bezier(0.23, 1, 0.32, 1);
+    transition-delay: 0.03s;
+  }
+
+  .product-card:hover .card-info {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .brand {
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    color: #333;
+    margin-bottom: 4px;
+    opacity: 0.8;
+  }
+
+  .name-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+  }
+
+  .name {
+    font-size: 17px;
+    font-weight: 600;
+    font-family: var(--font-body);
+    line-height: 1.3;
+    color: #000;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+  }
+
+  .price {
+    font-size: 15px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    color: #1a1a1a;
+    white-space: nowrap;
+    opacity: 0.9;
+  }
+
+  /* ===== CARD HOVER LIFT ===== */
+  .product-card {
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .product-card:hover {
+    transform: translateY(-6px);
+  }
+
+  /* Hidden state for filtering */
+  .product-card.hidden {
+    display: none;
+  }
+</style>

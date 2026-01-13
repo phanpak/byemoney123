@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Astro
+.astro/
+dist/
+
+# Claude Code
+.claude/
+
+# Playwright
+.playwright-mcp/
+
+# Environment
+.env
+.env.*
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store

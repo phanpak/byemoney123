@@ -1,0 +1,257 @@
+---
+import ProductCard from './ProductCard.astro';
+
+// Product data with actual images from bye.money
+const products = [
+  {
+    name: 'Mudle Crayon',
+    brand: 'Odujej',
+    price: '$39',
+    category: 'Home',
+    image: 'https://framerusercontent.com/images/tni7amhqrKIVGxFlPvl7coMF5s.png',
+    slug: 'odujej-mudle-crayon',
+    externalUrl: 'https://good-liver.com/products/mudle-crayon',
+  },
+  {
+    name: 'Routine Pack "Piece By Piece"',
+    brand: 'Humanrace',
+    price: '$120',
+    category: 'Grooming',
+    image: 'https://framerusercontent.com/images/v1hks0izrAFgNnN5XHC7VHb2nsw.png',
+    slug: 'humanrace-routine-pack-piece-by-piece-lego',
+    externalUrl: 'https://humanrace.com/products/limited-edition-routine-pack-piece-by-piece',
+  },
+  {
+    name: 'Image C Advance+',
+    brand: 'Kalkhoff',
+    price: '4200€',
+    category: 'Motors',
+    image: 'https://framerusercontent.com/images/FG4PoxvuzMyshZhDcijs48hLY9o.png',
+    slug: 'image-c-advance',
+    externalUrl: 'https://www.kalkhoff-bikes.com/fr_fr/image-c-advance',
+  },
+  {
+    name: 'PlayStation 30th Anniversary Collection',
+    brand: 'Sony',
+    price: 'TBD',
+    category: 'Tech',
+    image: 'https://framerusercontent.com/images/dXJPH4eUW7GPQ08GwhxQ6SpqYA.png',
+    slug: 'sony-the-playstation-30th-anniversary-collection',
+    externalUrl: 'https://blog.playstation.com/2024/09/19/celebrating-30-years-of-playstation-with-a-nostalgic-look/',
+  },
+  {
+    name: 'Granville 30 Carryall Bag',
+    brand: "Arc'Teryx",
+    price: '$160',
+    category: 'Outfit',
+    image: 'https://framerusercontent.com/images/MWvyj0zw8bFtR9Samfnsw6wMTpk.png',
+    slug: 'arc-teryx-granville-30-carryall-bag',
+    externalUrl: 'https://arcteryx.com/us/en/shop/granville-30-carryall-bag',
+  },
+  {
+    name: 'Swell Well Catchall',
+    brand: 'Heller',
+    price: '129€',
+    category: 'Home',
+    image: 'https://framerusercontent.com/images/2XfxQHKR6I8IFVOyAxH4nTwY.png',
+    slug: 'swell-well-catchall',
+    externalUrl: 'https://hellerfurniture.com/products/swell-wall-catchall',
+  },
+  {
+    name: 'Everyday Socks',
+    brand: 'MoMA Nike',
+    price: '$18',
+    category: 'Outfit',
+    image: 'https://framerusercontent.com/images/70kRNOPb585HKlqADk56bY798g0.png',
+    slug: 'moma-nike-everyday-socks',
+    externalUrl: 'https://store.moma.org/products/moma-nike-elite-crew-basketball-socks-lucky-green',
+  },
+  {
+    name: 'Paper Pro',
+    brand: 'reMarkable',
+    price: 'from 649€',
+    category: 'Tech',
+    image: 'https://framerusercontent.com/images/otKOXgZJ2WPsYQaDEF2ZuZPYFkY.png',
+    slug: 'remarkable-paper-pro',
+    externalUrl: 'https://remarkable.com/store/remarkable-paper/pro',
+  },
+  {
+    name: 'SLUSHi Frozen Drink Machine',
+    brand: 'Ninja',
+    price: '$299',
+    category: 'Home',
+    image: 'https://framerusercontent.com/images/eikNTvTnAH514H9paHiLaqtKi8.png',
+    slug: 'ninja-slushi-professional-frozen-drink-maker',
+    externalUrl: 'https://www.ninjakitchen.com/products/ninja-slushi-professional-frozen-drink-maker-zidFS301',
+  },
+  {
+    name: 'Mercedes-Benz G 500',
+    brand: 'Lego',
+    price: '$249',
+    category: 'Toys',
+    image: 'https://framerusercontent.com/images/kGFFmyRXr6bkYatLcmsMhvfHJik.png',
+    slug: 'mercedes-benz-g-500',
+    externalUrl: 'https://www.lego.com/en-us/product/mercedes-benz-g-500-professional-line-42177',
+  },
+  {
+    name: 'Electric Spin Scrubber',
+    brand: 'HOTO',
+    price: '$99',
+    category: 'Home',
+    image: 'https://framerusercontent.com/images/J3p9uhK7aRbp6sDZJgwtsDupgsA.png',
+    slug: 'hoto-electric-spin-scrubber',
+    externalUrl: 'https://hototools.com/products/electric-spin-scrubber',
+  },
+  {
+    name: 'Dialog Fountain Pen',
+    brand: 'LAMY',
+    price: '$399',
+    category: 'Office',
+    image: 'https://framerusercontent.com/images/MIqTeGtXqSDO5lIf5laOppXJReY.png',
+    slug: 'lamy-dialog-fountain-pen',
+    externalUrl: 'https://us-shop.lamy.com/en_us/fountain-pen-lamy-dialog.html',
+  },
+  {
+    name: 'Ace',
+    brand: 'Sonos',
+    price: '499€',
+    category: 'Tech',
+    image: 'https://framerusercontent.com/images/EGdsgfo2SszCHMuCyfpxO4MBjpY.png',
+    slug: 'sonos-ace',
+    externalUrl: 'https://www.sonos.com/fr-be/shop/sonos-ace-white',
+  },
+  {
+    name: 'Zodiac L Mirror',
+    brand: 'Moustache',
+    price: '1700€',
+    category: 'Home',
+    image: 'https://framerusercontent.com/images/veZowDXPzfctfJxoY2uk2yc.png',
+    slug: 'moustache-zodiac-l-mirror-jean-baptiste-fastrez',
+    externalUrl: 'https://www.moustache.fr/en/miroirs/1111-2753-zodiac.html',
+  },
+  {
+    name: 'The Creative Act: A Way of Being',
+    brand: 'Rick Rubin',
+    price: '26€',
+    category: 'Culture',
+    image: 'https://framerusercontent.com/images/SUeyg7TLfpIYzmmen3WzpI4Z0.png',
+    slug: 'rick-rubin-the-creative-act-a-way-of-being',
+    externalUrl: 'https://www.yvon-lambert.com/products/rick-rubin-the-creative-act-a-way-of-being',
+  },
+  {
+    name: 'Denim Mexican Tuxedo Westerner Jacket',
+    brand: 'Kapital',
+    price: '815€',
+    category: 'Outfit',
+    image: 'https://framerusercontent.com/images/ownM0QEoI9ysfDdIQbMR5tD3f6I.png',
+    slug: 'kapital-11-5oz-denim-mexican-tuxedo-westerner-jacket',
+    externalUrl: 'https://www.mrporter.com/en-fr/mens/product/kapital/clothing/denim-jackets/crochet-trimmed-denim-jacket',
+  },
+  {
+    name: 'Oracle Touch',
+    brand: 'Sage',
+    price: '2599€',
+    category: 'Home',
+    image: 'https://framerusercontent.com/images/JCF3f6u4WOkPsoEks5ruYnxW3jI.png',
+    slug: 'sage-oracle-touch',
+    externalUrl: 'https://www.sageappliances.com/eu/fr/products/espresso/bes990.html',
+  },
+  {
+    name: 'Aluminium Hanger',
+    brand: 'Tonari Design',
+    price: '¥2,500',
+    category: 'Outdoor',
+    image: 'https://framerusercontent.com/images/3M8wnzk9yRhbr6XupuiMoo5g.png',
+    slug: 'tonari-design-aluminium-hanger',
+    externalUrl: 'https://tonaridesign.base.shop/items/56593827',
+  },
+];
+---
+
+<section class="product-grid-section">
+  <div class="product-grid" data-product-grid>
+    {products.map((product) => (
+      <ProductCard {...product} />
+    ))}
+  </div>
+  <button class="load-more" data-load-more>
+    <span>Load More items</span>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+</section>
+
+<style>
+  .product-grid-section {
+    padding: 0 var(--spacing-xl);
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .load-more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-xl);
+    background: linear-gradient(90deg, var(--color-gray-300) 0%, var(--color-gray-400) 50%, var(--color-gray-300) 100%);
+    border-radius: var(--radius-full);
+    font-size: 14px;
+    font-family: var(--font-body);
+    color: var(--color-gray-700);
+    transition: all var(--transition-normal);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  .load-more:hover {
+    background: var(--color-gray-400);
+    animation: none;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+  }
+
+  @media (max-width: 1024px) {
+    .product-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .product-grid-section {
+      padding: 0 var(--spacing-md);
+    }
+
+    .product-grid {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-md);
+    }
+  }
+</style>
+
+<script>
+  // Category filtering
+  document.addEventListener('categoryChange', ((e: CustomEvent) => {
+    const category = e.detail.category;
+    const cards = document.querySelectorAll('.product-card');
+
+    cards.forEach(card => {
+      const cardCategory = card.getAttribute('data-category');
+      if (category === 'all' || cardCategory === category) {
+        card.classList.remove('hidden');
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+  }) as EventListener);
+</script>

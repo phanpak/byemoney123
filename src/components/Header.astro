@@ -1,0 +1,443 @@
+---
+interface Props {
+  currentCategory?: string;
+}
+
+const { currentCategory = 'all' } = Astro.props;
+
+const categories = [
+  { id: 'all', emoji: '💸', label: 'all' },
+  { id: 'culture', emoji: '🎨', label: 'Culture' },
+  { id: 'grooming', emoji: '💦', label: 'Grooming' },
+  { id: 'home', emoji: '🏠', label: 'Home' },
+  { id: 'motors', emoji: '🏁', label: 'Motors' },
+  { id: 'office', emoji: '📎', label: 'Office' },
+  { id: 'outdoor', emoji: '⛺️', label: 'Outdoor' },
+  { id: 'outfit', emoji: '🧢', label: 'Outfit' },
+  { id: 'pantry', emoji: '🥫', label: 'Pantry' },
+  { id: 'tech', emoji: '📱', label: 'Tech' },
+];
+
+const languages = [
+  { code: 'en', flag: '🇺🇸' },
+  { code: 'kr', flag: '🇰🇷' },
+  { code: 'fr', flag: '🇫🇷' },
+];
+
+const menuLinks = [
+  { href: './', label: 'Home' },
+  { href: './about', label: 'About' },
+  { href: './index', label: 'Index' },
+  { href: './contact', label: 'Contact' },
+];
+---
+
+<header class="header">
+  <div class="header-left">
+    <a href="./" class="logo-link">
+      <div class="logo-coin">
+        <div class="coin-face coin-front"></div>
+        <div class="coin-face coin-back"></div>
+      </div>
+    </a>
+    <a href="./" class="site-name">
+      <span class="name-en">byemoney</span>
+      <span class="name-kr">안녕돈</span>
+    </a>
+  </div>
+
+  <div class="filter-container">
+    <button class="filter-toggle" data-filter-toggle aria-expanded="false" aria-label="Filter categories">
+      <span class="filter-emoji">{categories.find(c => c.id === currentCategory)?.emoji}</span>
+      <span class="filter-label">{categories.find(c => c.id === currentCategory)?.label}</span>
+    </button>
+    <div class="filter-dropdown" data-filter-dropdown>
+      {categories.map((category) => (
+        <button
+          class:list={['filter-option', { active: category.id === currentCategory }]}
+          data-category={category.id}
+        >
+          <span class="filter-emoji">{category.emoji}</span>
+          <span class="filter-label">{category.label}</span>
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <div class="header-right">
+    <div class="language-selector">
+      <select class="language-select" aria-label="Select Language">
+        {languages.map((lang) => (
+          <option value={lang.code} selected={lang.code === 'en'}>
+            {lang.flag}
+          </option>
+        ))}
+      </select>
+      <span class="language-current">🇺🇸</span>
+      <svg class="language-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <path d="M3 5L6 8L9 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <button class="theme-toggle" aria-label="Toggle theme">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M10 2V4M10 16V18M18 10H16M4 10H2M15.66 4.34L14.24 5.76M5.76 14.24L4.34 15.66M15.66 15.66L14.24 14.24M5.76 5.76L4.34 4.34" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <div class="menu-container">
+      <button class="menu-toggle" data-menu-toggle aria-expanded="false" aria-label="Menu">
+        <span class="menu-label">Menu</span>
+        <svg class="menu-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M3 5L6 8L9 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <nav class="menu-dropdown" data-menu-dropdown>
+        {menuLinks.map((link) => (
+          <a href={link.href} class="menu-link">{link.label}</a>
+        ))}
+      </nav>
+    </div>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 30px;
+    background: var(--color-white);
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
+  .logo-link {
+    display: block;
+    width: 50px;
+    height: 50px;
+    perspective: 1000px;
+  }
+
+  .logo-coin {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: spin-coin 4s linear infinite;
+  }
+
+  .coin-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    backface-visibility: hidden;
+    background: linear-gradient(135deg, #d4af37 0%, #f9df7b 25%, #d4af37 50%, #a67c00 75%, #d4af37 100%);
+    box-shadow:
+      inset 0 0 20px rgba(0, 0, 0, 0.3),
+      0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .coin-face::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    border: 2px solid rgba(166, 124, 0, 0.5);
+  }
+
+  .coin-face::after {
+    content: '💸';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+
+  .coin-back {
+    transform: rotateY(180deg);
+  }
+
+  .coin-back::after {
+    content: 'BYE';
+    font-family: var(--font-display);
+    font-size: 12px;
+    color: var(--color-gray-900);
+    letter-spacing: -0.5px;
+  }
+
+  @keyframes spin-coin {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(360deg); }
+  }
+
+  .site-name {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+    font-size: 11px;
+  }
+
+  .name-en {
+    font-family: var(--font-body);
+    font-weight: 400;
+  }
+
+  .name-kr {
+    font-family: var(--font-korean);
+    font-size: 10px;
+    color: var(--color-gray-600);
+  }
+
+  /* Filter */
+  .filter-container {
+    position: relative;
+  }
+
+  .filter-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 8px 16px;
+    background: var(--color-gray-300);
+    border-radius: var(--radius-full);
+    font-size: 13px;
+    transition: background var(--transition-fast);
+  }
+
+  .filter-toggle:hover {
+    background: var(--color-gray-400);
+  }
+
+  .filter-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    gap: 4px;
+    padding: 4px;
+    background: var(--color-white);
+    border-radius: var(--radius-full);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+  }
+
+  .filter-dropdown.open {
+    display: flex;
+  }
+
+  .filter-option {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 8px 12px;
+    border-radius: var(--radius-full);
+    font-size: 13px;
+    transition: background var(--transition-fast);
+  }
+
+  .filter-option:hover,
+  .filter-option.active {
+    background: var(--color-gray-900);
+    color: var(--color-white);
+  }
+
+  .filter-emoji {
+    font-size: 14px;
+  }
+
+  /* Header Right */
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+  }
+
+  .language-selector {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 8px 12px;
+    background: var(--color-gray-100);
+    border-radius: var(--radius-full);
+  }
+
+  .language-select {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .language-current {
+    font-size: 16px;
+  }
+
+  .language-arrow {
+    color: var(--color-gray-600);
+  }
+
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--color-gray-100);
+    border-radius: 50%;
+    color: var(--color-gray-700);
+    transition: background var(--transition-fast);
+  }
+
+  .theme-toggle:hover {
+    background: var(--color-gray-300);
+  }
+
+  /* Menu */
+  .menu-container {
+    position: relative;
+  }
+
+  .menu-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 10px 16px;
+    background: var(--color-gray-100);
+    border-radius: var(--radius-lg);
+    font-size: 14px;
+    transition: all var(--transition-fast);
+  }
+
+  .menu-toggle[aria-expanded="true"] {
+    background: var(--color-accent);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+
+  .menu-toggle[aria-expanded="true"] .menu-arrow {
+    transform: rotate(180deg);
+  }
+
+  .menu-arrow {
+    transition: transform var(--transition-fast);
+  }
+
+  .menu-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    display: none;
+    flex-direction: column;
+    padding: 8px 16px 16px;
+    background: var(--color-accent);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    min-width: 100%;
+  }
+
+  .menu-dropdown.open {
+    display: flex;
+  }
+
+  .menu-link {
+    padding: 6px 0;
+    font-size: 14px;
+    text-align: right;
+    transition: opacity var(--transition-fast);
+  }
+
+  .menu-link:hover {
+    opacity: 0.7;
+  }
+
+  @media (max-width: 768px) {
+    .header {
+      padding: 10px 16px;
+    }
+
+    .site-name {
+      display: none;
+    }
+
+    .filter-dropdown {
+      flex-wrap: wrap;
+      max-width: calc(100vw - 32px);
+      justify-content: center;
+    }
+  }
+</style>
+
+<script>
+  // Filter dropdown toggle
+  const filterToggle = document.querySelector('[data-filter-toggle]');
+  const filterDropdown = document.querySelector('[data-filter-dropdown]');
+
+  filterToggle?.addEventListener('click', () => {
+    const isOpen = filterDropdown?.classList.toggle('open');
+    filterToggle.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  // Filter option selection
+  const filterOptions = document.querySelectorAll('.filter-option');
+  filterOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      const category = option.getAttribute('data-category');
+      const emoji = option.querySelector('.filter-emoji')?.textContent;
+      const label = option.querySelector('.filter-label')?.textContent;
+
+      // Update toggle button
+      const toggle = document.querySelector('[data-filter-toggle]');
+      if (toggle) {
+        toggle.querySelector('.filter-emoji')!.textContent = emoji || '';
+        toggle.querySelector('.filter-label')!.textContent = label || '';
+      }
+
+      // Update active state
+      filterOptions.forEach(opt => opt.classList.remove('active'));
+      option.classList.add('active');
+
+      // Close dropdown
+      filterDropdown?.classList.remove('open');
+      filterToggle?.setAttribute('aria-expanded', 'false');
+
+      // Dispatch custom event for filtering
+      document.dispatchEvent(new CustomEvent('categoryChange', { detail: { category } }));
+    });
+  });
+
+  // Menu dropdown toggle
+  const menuToggle = document.querySelector('[data-menu-toggle]');
+  const menuDropdown = document.querySelector('[data-menu-dropdown]');
+
+  menuToggle?.addEventListener('click', () => {
+    const isOpen = menuDropdown?.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+
+    if (!target.closest('.filter-container')) {
+      filterDropdown?.classList.remove('open');
+      filterToggle?.setAttribute('aria-expanded', 'false');
+    }
+
+    if (!target.closest('.menu-container')) {
+      menuDropdown?.classList.remove('open');
+      menuToggle?.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>

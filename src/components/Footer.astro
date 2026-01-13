@@ -1,0 +1,99 @@
+---
+const currentYear = new Date().getFullYear();
+
+const socialLinks = [
+  { href: 'https://instagram.com/adieulargent', label: 'Instagram' },
+  { href: 'https://twitter.com/adieulargent', label: 'Twitter' },
+  { href: './contact', label: 'Contact' },
+];
+---
+
+<footer class="footer">
+  <div class="footer-left">
+    <span class="copyright">© {currentYear}, crafted by</span>
+    <a href="./contact" class="author-link">Mathieu Lebreton</a>
+  </div>
+  <nav class="footer-nav">
+    {socialLinks.map((link) => (
+      <a
+        href={link.href}
+        class="social-link"
+        target={link.href.startsWith('http') ? '_blank' : undefined}
+        rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+      >
+        <span>{link.label}</span>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    ))}
+  </nav>
+</footer>
+
+<style>
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-lg) var(--spacing-xl);
+    margin-top: var(--spacing-xl);
+  }
+
+  .footer-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 12px;
+    color: var(--color-gray-600);
+  }
+
+  .author-link {
+    color: var(--color-black);
+    font-weight: 500;
+    transition: opacity var(--transition-fast);
+  }
+
+  .author-link:hover {
+    opacity: 0.7;
+  }
+
+  .footer-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+  }
+
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 13px;
+    color: var(--color-gray-700);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast);
+  }
+
+  .social-link:hover {
+    background: var(--color-gray-100);
+    border-color: var(--color-gray-400);
+  }
+
+  .social-link svg {
+    opacity: 0.6;
+  }
+
+  @media (max-width: 640px) {
+    .footer {
+      flex-direction: column;
+      gap: var(--spacing-md);
+      padding: var(--spacing-lg) var(--spacing-md);
+    }
+
+    .footer-nav {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+  }
+</style>

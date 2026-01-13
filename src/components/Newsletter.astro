@@ -1,0 +1,139 @@
+---
+
+---
+
+<section class="newsletter">
+  <div class="newsletter-content">
+    <h2 class="newsletter-title">The Best Products In Your Inbox</h2>
+    <p class="newsletter-subtitle">Obsessively Curated. La Crème De La Crème</p>
+  </div>
+  <form class="newsletter-form" data-newsletter-form>
+    <div class="input-wrapper">
+      <input
+        type="email"
+        name="email"
+        placeholder="name@email.com"
+        required
+        class="newsletter-input"
+        aria-label="Email address"
+      />
+      <button type="submit" class="newsletter-submit">
+        subscribe
+      </button>
+    </div>
+  </form>
+</section>
+
+<style>
+  .newsletter {
+    margin: var(--spacing-3xl) var(--spacing-xl);
+    padding: var(--spacing-3xl) var(--spacing-xl);
+    background: var(--color-gray-900);
+    border-radius: var(--radius-xl);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .newsletter-content {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .newsletter-title {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 700;
+    color: var(--color-accent);
+    line-height: 1.1;
+    margin-bottom: var(--spacing-sm);
+    text-transform: capitalize;
+    letter-spacing: -0.02em;
+  }
+
+  .newsletter-subtitle {
+    font-size: 15px;
+    color: var(--color-gray-500);
+    font-family: var(--font-body);
+  }
+
+  .newsletter-form {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .input-wrapper {
+    display: flex;
+    background: var(--color-gray-700);
+    border-radius: var(--radius-full);
+    padding: 6px;
+    gap: var(--spacing-sm);
+  }
+
+  .newsletter-input {
+    flex: 1;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    color: var(--color-white);
+    outline: none;
+  }
+
+  .newsletter-input::placeholder {
+    color: var(--color-gray-500);
+  }
+
+  .newsletter-submit {
+    padding: var(--spacing-md) var(--spacing-xl);
+    background: var(--color-accent);
+    color: var(--color-black);
+    border-radius: var(--radius-full);
+    font-size: 14px;
+    font-weight: 500;
+    font-family: var(--font-body);
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+  }
+
+  .newsletter-submit:hover {
+    background: var(--color-white);
+    transform: scale(1.02);
+  }
+
+  .newsletter-submit:active {
+    transform: scale(0.98);
+  }
+
+  @media (max-width: 640px) {
+    .newsletter {
+      margin: var(--spacing-xl) var(--spacing-md);
+      padding: var(--spacing-xl) var(--spacing-md);
+    }
+
+    .input-wrapper {
+      flex-direction: column;
+    }
+
+    .newsletter-input {
+      text-align: center;
+    }
+
+    .newsletter-submit {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  const form = document.querySelector('[data-newsletter-form]');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const email = formData.get('email');
+    console.log('Newsletter signup:', email);
+    // Here you would typically send this to your API
+    alert('Thanks for subscribing!');
+    (e.target as HTMLFormElement).reset();
+  });
+</script>
