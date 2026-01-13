@@ -128,6 +128,11 @@ const menuLinks = [
     mix-blend-mode: normal;
   }
 
+  /* When scrolled, disable mix-blend-mode so elements stay readable */
+  .header.scrolled {
+    mix-blend-mode: normal;
+  }
+
   /* Logo */
   .header-left {
     flex: 1;
@@ -753,6 +758,19 @@ const menuLinks = [
 
       // Dispatch event
       document.dispatchEvent(new CustomEvent('categoryChange', { detail: { category } }));
+
+      // Scroll to product grid to show filtered results
+      const productGrid = document.querySelector('.product-grid');
+      if (productGrid) {
+        const headerHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 80;
+        const gridTop = productGrid.getBoundingClientRect().top + window.scrollY;
+        const scrollTarget = gridTop - headerHeight - 40; // 40px extra padding
+
+        window.scrollTo({
+          top: Math.max(0, scrollTarget),
+          behavior: 'smooth'
+        });
+      }
     });
   });
 
