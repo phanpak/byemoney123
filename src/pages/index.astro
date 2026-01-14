@@ -1,22 +1,647 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Hero from '../components/Hero.astro';
-import ProductGrid from '../components/ProductGrid.astro';
-import Newsletter from '../components/Newsletter.astro';
-import Footer from '../components/Footer.astro';
+
+// Product data - actual images from thiings.co
+const products = [
+  { alt: "Nasi Lemak", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-iQpPcYUh95BflmnDaUACahMlP9tZx3.png&w=320&q=75" },
+  { alt: "Laboratory Robot Arm", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-lVywgXVTlXDL2EINou6SIT3Hv7qvei.png&w=320&q=75" },
+  { alt: "Inflatable Dinosaur Suit", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-Ak8tK3XpDjhVDnGH6bUK7o4z5XlJdj.png&w=320&q=75" },
+  { alt: "UX Designer", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-u9XseZliiHeYnbVsSjAHZAI8eYWprC.png&w=320&q=75" },
+  { alt: "Candlelit Crypt", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-NToN6bOlqIxBvlYSJIV5lSTlfPYTL7.png&w=320&q=75" },
+  { alt: "Fired", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-UH1DWaB7bXKfYdyT3ZDp3T2Bvcvn2r.png&w=320&q=75" },
+  { alt: "Giant Desert Hairy Scorpion", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-3Gq8bXtQtyG3G4ASKuTMz8SgxgbvVM.png&w=320&q=75" },
+  { alt: "Slot Machine", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-nEiMW4tfwD216IgH1x0Ku9NK789UcR.png&w=320&q=75" },
+  { alt: "Ferry", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-adD99QtxVE5zK0oRmUbkC7gswNoLNX.png&w=320&q=75" },
+  { alt: "Gochugaru Sprinkle", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-x4Gd5bzrV9VGYEEvrMN70IOXgaJkxM.png&w=320&q=75" },
+  { alt: "Digital Drawing Tablet", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-hlNdbVy5o4samVa0oyg3IQHrMNLU7T.png&w=320&q=75" },
+  { alt: "Table", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-YcSGQ22Up1T2BEL9eR8le0nhOWb1MT.png&w=320&q=75" },
+  { alt: "Syrian Flag", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-4zzPjqOrr5DfxKBKnz04TRxmWvF0Mn.png&w=320&q=75" },
+  { alt: "Sommelier Knife", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-Bb38qIxzmvU0wfemRU7bagde61w3u9.png&w=320&q=75" },
+  { alt: "Converted Water Tower Home", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-zeQhR87QS0RynLCJchdDTxclSMrWrE.png&w=320&q=75" },
+  { alt: "Nail Scissors", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-H0m1hkrVnkV3uDumg8ppoEiVaeRe2i.png&w=320&q=75" },
+  { alt: "Giganotosaurus", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-Hh1y3Jy98HULBPgiJmpeK5NUKvAV16.png&w=320&q=75" },
+  { alt: "Miniature Kraken", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-ssom8RX6oNGEjUWTjjW1zCSq1szaKV.png&w=320&q=75" },
+  { alt: "Oscar Wilde", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-E7KEJzTjCusrFoJU3esjEbbWa8Sshm.png&w=320&q=75" },
+  { alt: "Dog Jacket", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-xLRd99EhdpF0Ud2uO8mlVxlyLHGdh8.png&w=320&q=75" },
+  { alt: "Ice Skate", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-PlFBGe84Vd3OmEmZm0QrDFyb2oHVbM.png&w=320&q=75" },
+  { alt: "Harlequin Filefish", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-xs5MoWWd9l298Qj9EEMIHtO5IEEduv.png&w=320&q=75" },
+  { alt: "Plaid skirt", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-1FvQvuHXjU8KUvkkApGV4KRI5jeUIM.png&w=320&q=75" },
+  { alt: "Ammonite", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-3fnTbFyR0l0Tj8FibmE54eoWshNLqy.png&w=320&q=75" },
+  { alt: "Sanctuary", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-zgouiIGpkbXZk3ciY6m4I3oeeCotmV.png&w=320&q=75" },
+  { alt: "Sand cat", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-0quV4F9LbTdvXk4XUqgYENMjBj842y.png&w=320&q=75" },
+  { alt: "Smart Display", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-szxRgzd7v8fiFe8jxVaaFW8Y3mSGcy.png&w=320&q=75" },
+  { alt: "Lady Justice", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-0GcRUqxhulsXwbD2pODRYPP0L8NAUo.png&w=320&q=75" },
+  { alt: "Festival", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-ypTEFzK3TI2qePxQj2frAgXSRdu93d.png&w=320&q=75" },
+  { alt: "Gourami", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-19dpwhkajd8CNRmgNzFHUMH0kI0xwj.png&w=320&q=75" },
+  { alt: "Cherry Tree", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-gyoxLFpXzRRzVsgPJOKvB2r4tvzpcy.png&w=320&q=75" },
+  { alt: "Sliotar", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-kAL7sd0JJEprekvgaXjaATrxWeBZ1i.png&w=320&q=75" },
+  { alt: "Spinning Wheel", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-eCy1xd7CVuyIOfMOjnCAZEomLNkpjY.png&w=320&q=75" },
+  { alt: "Martian Ice Cap", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-bNc8RwfZGNCyWDTrvnytmme2nJMgMp.png&w=320&q=75" },
+  { alt: "Car Battery", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-JgagqfPJ52ovXvCZc6gQrjRpakDVh7.png&w=320&q=75" },
+  { alt: "White King Chess Piece", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-vuq3IJJEE8kB6iU6hTwCb8NpVLEWwB.png&w=320&q=75" },
+  { alt: "Black Garlic", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-sogI1W8vkJe9qxdTem1UuqxgVk0KcV.png&w=320&q=75" },
+  { alt: "Interstellar Ark Ship", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-OJdffP5yyso96qlc70uHCnqqq0rUUn.png&w=320&q=75" },
+  { alt: "Sea Spider", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-OaImQEqBKLZQjFCJAhkGnCEe31iEBC.png&w=320&q=75" },
+  { alt: "Indoor Climbing Volume", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-uECjWYPipgImVCNPTr7JCqYfqLRC1i.png&w=320&q=75" },
+  { alt: "Bone", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-7tgO6LagJYCD9gdfRUrJhXjvElAjmX.png&w=320&q=75" },
+  { alt: "Tajin Mango Slice", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-w02i9MCyJHmG8t6ytWQoldE0C7jlj1.png&w=320&q=75" },
+  { alt: "Beef Jerky", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-g4M7NgDSqKjtc28u6FCXg8VqLocYNc.png&w=320&q=75" },
+  { alt: "Ant", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-ovcsmMs4a14eL8xbuMZoVfsOaqi633.png&w=320&q=75" },
+  { alt: "Ottoman Coffee Pot", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-iWY3ysmRV5sqXCGxa6MuxIDjgzQhk6.png&w=320&q=75" },
+  { alt: "Manjushri", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-yAKQexsxrls02rSbyhrXlrPt1hF75s.png&w=320&q=75" },
+  { alt: "Barbados", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-m4oS8wRnLh74mYK6mk4gXuey3Z0YW9.png&w=320&q=75" },
+  { alt: "Leather Pouch", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-mIqpKzRAD8sKEIssqspPCiV9MLe4Te.png&w=320&q=75" },
+  { alt: "Headlamp", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-rDL5ITGYXi655XygwVNtznodQrS8oo.png&w=320&q=75" },
+  { alt: "Germany Flag", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-3MogRIA0k70g1zsDKRiq3j813HjN8Q.png&w=320&q=75" },
+  { alt: "Glue Stick", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-0kgT2laHnsLUkKx4c1Qb5NEjz1Drco.png&w=320&q=75" },
+  { alt: "Mongolia", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-Ouj8vGph09oSPFmjfccMC7YhnVNCFm.png&w=320&q=75" },
+  { alt: "Belted Galloway", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-d51HMyJ945ZfG58eFbLBkbzCudBPK6.png&w=320&q=75" },
+  { alt: "Foam Roller", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-gwLgvBrxPDN3AYdWg2Fq3Qxvjfm3WR.png&w=320&q=75" },
+  { alt: "Swimming", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-XGnNDvmees2ZGykwyfIduxzGgjSVYO.png&w=320&q=75" },
+  { alt: "Traditional Chinese Green Tea", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-YtpSqUEwnTYPi72LAtjCZlLChGwqyz.png&w=320&q=75" },
+  { alt: "Firewood", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-HQVkjAJkDWurWsXHAbwMZeyMnPpGLv.png&w=320&q=75" },
+  { alt: "Romania", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-lphWjQgstXyBzk3vQYJ7NjVSLFmi5U.png&w=320&q=75" },
+  { alt: "Tagine", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-Ui8IQkj4c6OPeuUeSN5GRDrTP27fir.png&w=320&q=75" },
+  { alt: "Codfish", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-RnedYZaSwyfcaIwlEuyIDVOxxeCskf.png&w=320&q=75" },
+  { alt: "Warranty", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-ZvapaJRlyCukI9mUZHnU8ZaSBVCzzG.png&w=320&q=75" },
+  { alt: "The Scream", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-lnKzg2lI0G2QAViUgRCY70jGRsQ6qc.png&w=320&q=75" },
+  { alt: "Stack of Magazines", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-71Z8sx4ZvRhm57uxt8TqB1wUyV2aXx.png&w=320&q=75" },
+  // Additional items
+  { alt: "Barcode", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-BwCpmJXm80olWn4SbwsWSCKjFch3nc.png&w=320&q=75" },
+  { alt: "Solar Lantern", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-vxjmMg1dm4T2FH9t3PYRMJtetaXQVL.png&w=320&q=75" },
+  { alt: "Reception Desk", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-j1hAqwLHjbirtb4OlJxchpu7MmUz5M.png&w=320&q=75" },
+  { alt: "Water Tank", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-gr1w9aoBfJyNGWbTTN1Jsx0MhT9Gtf.png&w=320&q=75" },
+  { alt: "Hockey Puck", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-yrt4QuyfJe6b5YkJmQj9q5ne0gUjOo.png&w=320&q=75" },
+  { alt: "Barbell", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-v1ZuG3dT9iz88ax4OhUmF7CVnbNDGA.png&w=320&q=75" },
+  { alt: "Salted Caramel Ice Cream", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-NrxqD2DZLRKbPEZFzkPKCvkmqkfR5V.png&w=320&q=75" },
+  { alt: "Marabou Stork", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-pihBD91rTEkkDGLp4c9TONIloyeeHj.png&w=320&q=75" },
+  { alt: "Door Stopper", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-iSNh5kSnoCxs2XR4UrU0GMNnaQatkP.png&w=320&q=75" },
+  { alt: "Gallbladder", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-LOf2pogjyLXib5asKTFa2E8MtbkVjZ.png&w=320&q=75" },
+  { alt: "Hermit Crab Shell", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-gmY1gqZbOkEu7pBwqEOPJgg1N6Y7m3.png&w=320&q=75" },
+  { alt: "Subscription", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-JFRJMlgmIk1SNlNPZVGSW7bTco4jY4.png&w=320&q=75" },
+  { alt: "Rubber Stamp Roller", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-fjlOqa44Pi6m5ldLJdBGJDOOjDKh2I.png&w=320&q=75" },
+  { alt: "Snake Print Purse", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-DO4bDR78tSLWEfVuf4ZpJr4ufvi1ZT.png&w=320&q=75" },
+  { alt: "Carbon Fiber Running Blade", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-YyzAUk1LDM7azYsvrdtWhuIVtNPvaU.png&w=320&q=75" },
+  { alt: "Invisible Ink", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-odPFcPVgukkEeE6xqWzLqHmTjHC8mr.png&w=320&q=75" },
+  { alt: "Taxi", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-iMa1InVGtssLycAQNqMjjPs8GkWMHd.png&w=320&q=75" },
+  { alt: "Tram", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-oS2NB9MOBfYnsNjiUK14qjABUB6w5R.png&w=320&q=75" },
+  { alt: "Peat Bog", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-GaFKATQy2ga27fRqCAXmH67rF4NpwI.png&w=320&q=75" },
+  { alt: "Confetti Balloon", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-4mTNWcfJMngojKemNyl1nIrcs7GSzD.png&w=320&q=75" },
+  { alt: "Inflatable Flamingo Pool Float", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-YlU7ba5ChEVDtLSz2nbdO0FUJUFQt2.png&w=320&q=75" },
+  { alt: "Petabyte Data Drive", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-ImCIIS0rK57wUQATUvlqns0FoK9gS1.png&w=320&q=75" },
+  { alt: "Soapstone Pipe", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-rnGzfMedtYrEkV2Ry96yhl2StqcOxO.png&w=320&q=75" },
+  { alt: "Kazoo", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-J3vS085ipkwpUi5JvYq6JcIyvSlImH.png&w=320&q=75" },
+  { alt: "Goban", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-tIhn59esMnVpWDODRdK9kHhW6PC7X5.png&w=320&q=75" },
+  { alt: "Varsity Jacket", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-HW54BeUygzbQnI8UXCV2ks8GvgzmTK.png&w=320&q=75" },
+  { alt: "Pygmy Hippopotamus", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-TFKs4NNGwWIi9gKTNF5PWiAdndzWzc.png&w=320&q=75" },
+  { alt: "Satchel Bag", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-hLl8Fs7hjOzYJhRk8rXdjohZHd5hoV.png&w=320&q=75" },
+  { alt: "Celebrity", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-Ug4fv1zQJ6QT0dvjbeZ9cuoja0WnsL.png&w=320&q=75" },
+  { alt: "Coquerel's Sifaka", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-nLivJCwPKTxdZrB8pr3aJxaYk0HfGa.png&w=320&q=75" },
+  { alt: "Glass Water Jug", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-wlXh6JWvCsgwxSJKtGYnfh4Kpb6W3Q.png&w=320&q=75" },
+  { alt: "Colosseum", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-W32RLUwdp2pbnvDnAV433cTwt8FqsP.png&w=320&q=75" },
+  { alt: "Baklava", src: "https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-zsCS9ih5tpmPPIfY3mOMicQi3bq6Oz.png&w=320&q=75" },
+];
+
+const categories = [
+  { name: "all", bg: "rgb(255, 133, 0)", active: true },
+  { name: "latest", bg: "rgb(255, 215, 0)", active: false },
+  { name: "animals", bg: "rgb(152, 251, 152)", active: false },
+  { name: "vehicles", bg: "rgb(135, 206, 235)", active: false },
+  { name: "sponsors", bg: "rgb(221, 160, 221)", active: false },
+  { name: "more", bg: "rgb(156, 163, 175)", active: false },
+];
+
+// Grid configuration is now handled entirely in client-side JavaScript
+// to ensure the infinite canvas works correctly
 ---
 
-<Layout title="bye money — Obsessively Curated">
-  <main>
-    <Hero />
-    <ProductGrid />
-    <Newsletter />
-  </main>
-  <Footer />
+<Layout title="The Thiings Collection">
+  <!-- Canvas viewport (clips the infinite canvas) -->
+  <div class="canvas-viewport" id="viewport">
+    <!-- Container for dynamically positioned items -->
+    <div class="infinite-canvas" id="canvas"></div>
+  </div>
+
+  <!-- Fixed UI elements -->
+  <header class="header">
+    <div class="search-container">
+      <input type="text" placeholder="Search 9000 Thiings" class="search-input" />
+    </div>
+    <button class="request-btn">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 1V11M1 6H11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span>Request</span>
+    </button>
+    <nav class="categories">
+      {categories.map((cat) => (
+        <button
+          class={`category-pill ${cat.active ? 'active' : ''}`}
+          style={`--pill-bg: ${cat.bg}`}
+        >
+          {cat.name}
+        </button>
+      ))}
+    </nav>
+    <!-- Hamburger menu for mobile -->
+    <button class="hamburger-btn" aria-label="Menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </header>
+
+  <div class="action-buttons">
+    <button class="action-btn">discover more</button>
+    <button class="action-btn">download all</button>
+  </div>
+
+  <!-- Pass product data to client-side JavaScript -->
+  <script id="products-data" type="application/json" set:html={JSON.stringify(products)}></script>
 </Layout>
 
 <style>
-  main {
-    min-height: 100vh;
+  /* Canvas viewport - clips the infinite canvas */
+  .canvas-viewport {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    cursor: grab;
+  }
+
+  .canvas-viewport:active {
+    cursor: grabbing;
+  }
+
+  /* Infinite canvas that moves via transform */
+  .infinite-canvas {
+    position: absolute;
+    will-change: transform;
+    /* Initial position will be set by JS */
+  }
+
+  /* Individual items positioned absolutely on canvas - MUST be global for dynamic elements */
+  :global(.canvas-item) {
+    position: absolute;
+    width: 160px;
+    height: 160px;
+    cursor: pointer;
+    transition: transform 0.1s ease-out;
+  }
+
+  :global(.canvas-item:hover) {
+    z-index: 10;
+  }
+
+  :global(.canvas-item:hover img) {
+    transform: scale(1.1);
+  }
+
+  :global(.canvas-item:active img) {
+    transform: scale(0.95);
+  }
+
+  :global(.canvas-item img) {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+    transition: transform 0.2s ease;
+  }
+
+  /* Header - fixed position */
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    gap: 8px;
+    pointer-events: none;
+  }
+
+  .header > * {
+    pointer-events: auto;
+  }
+
+  .search-container {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 9999px;
+    padding: 8px 16px;
+    width: 226px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    backdrop-filter: blur(10px);
+  }
+
+  .search-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: rgb(0, 0, 0);
+    width: 100%;
+  }
+
+  .search-input::placeholder {
+    color: rgba(0, 0, 0, 0.5);
+  }
+
+  .request-btn {
+    background: rgba(0, 0, 0, 0.3);
+    color: rgb(255, 255, 255);
+    border: none;
+    border-radius: 9999px;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    backdrop-filter: blur(10px);
+  }
+
+  .request-btn:hover {
+    background: rgba(0, 0, 0, 0.4);
+    transform: scale(1.05);
+  }
+
+  .categories {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .category-pill {
+    background: var(--pill-bg);
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 9999px;
+    padding: 4px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    height: 28px;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0.8;
+  }
+
+  .category-pill:hover {
+    opacity: 1;
+  }
+
+  .category-pill.active {
+    font-weight: 600;
+    transform: scale(1.05);
+    opacity: 1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Action buttons - fixed position */
+  .action-buttons {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  .action-buttons > * {
+    pointer-events: auto;
+  }
+
+  .action-btn {
+    background: rgba(0, 0, 0, 0.3);
+    color: rgb(255, 255, 255);
+    border: none;
+    border-radius: 9999px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: all 0.2s;
+  }
+
+  .action-btn:hover {
+    background: rgba(0, 0, 0, 0.4);
+    transform: scale(1.05);
+  }
+
+  /* Hamburger button - hidden by default */
+  .hamburger-btn {
+    display: none;
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 9999px;
+    width: 42px;
+    height: 42px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    color: rgba(0, 0, 0, 0.6);
+    margin-left: auto;
+    backdrop-filter: blur(10px);
+    transition: all 0.2s;
+  }
+
+  .hamburger-btn:hover {
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .categories {
+      display: none;
+    }
+
+    .request-btn {
+      display: none;
+    }
+
+    .hamburger-btn {
+      display: flex;
+    }
+
+    .search-container {
+      flex: 1;
+      max-width: none;
+      width: auto;
+    }
+
+    .action-btn {
+      padding: 10px 18px;
+      font-size: 14px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .header {
+      padding: 12px;
+    }
+
+    .action-buttons {
+      bottom: 20px;
+    }
+
+    .action-btn {
+      padding: 8px 14px;
+      font-size: 12px;
+    }
   }
 </style>
+
+<script>
+  // Load products from embedded JSON
+  const productsData = document.getElementById('products-data');
+  const products: Array<{alt: string, src: string}> = productsData ? JSON.parse(productsData.textContent || '[]') : [];
+
+  // Infinite canvas with virtual grid
+  const viewport = document.getElementById('viewport');
+  const canvas = document.getElementById('canvas');
+
+  if (viewport && canvas && products.length > 0) {
+    // Grid configuration - matching thiings.co layout (larger items, more spacing)
+    const CELL_SIZE = 200; // 160px item + 40px gap
+    const GRID_COLS = 10; // ~6-7 visible per row on 1200px screen
+    const GRID_ROWS = Math.ceil(products.length / GRID_COLS);
+
+    // State
+    let isDragging = false;
+    let hasDragged = false;
+    let startX = 0;
+    let startY = 0;
+    let translateX = 0;
+    let translateY = 0;
+    let velocityX = 0;
+    let velocityY = 0;
+    let lastX = 0;
+    let lastY = 0;
+    let lastTime = 0;
+    let animationId: number | null = null;
+
+    // Pool of DOM elements for visible cells
+    const elementPool: Map<string, HTMLDivElement> = new Map();
+    let lastVisibleCells: Set<string> = new Set();
+
+    // Helper: Proper modulo that handles negative numbers
+    function mod(n: number, m: number): number {
+      return ((n % m) + m) % m;
+    }
+
+    // Get product for any grid position (wrapping infinitely)
+    function getProductForCell(col: number, row: number): {alt: string, src: string} {
+      const wrappedCol = mod(col, GRID_COLS);
+      const wrappedRow = mod(row, GRID_ROWS);
+      const index = wrappedRow * GRID_COLS + wrappedCol;
+      return products[mod(index, products.length)];
+    }
+
+    // Create a DOM element for an item
+    function createElement(col: number, row: number): HTMLDivElement {
+      const product = getProductForCell(col, row);
+      const el = document.createElement('div');
+      el.className = 'canvas-item';
+      el.innerHTML = `<img src="${product.src}" alt="${product.alt}" loading="eager" draggable="false" />`;
+
+      // Position in world coordinates (20px padding for proper spacing)
+      const x = col * CELL_SIZE + 20;
+      const y = row * CELL_SIZE + 20;
+      el.style.transform = `translate(${x}px, ${y}px)`;
+
+      return el;
+    }
+
+    // Update visible items based on current pan position
+    function updateVisibleItems() {
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      // Calculate visible range in world coordinates
+      const worldLeft = -translateX - CELL_SIZE;
+      const worldTop = -translateY - CELL_SIZE;
+      const worldRight = worldLeft + viewportWidth + CELL_SIZE * 2;
+      const worldBottom = worldTop + viewportHeight + CELL_SIZE * 2;
+
+      // Convert to grid cell coordinates
+      const startCol = Math.floor(worldLeft / CELL_SIZE);
+      const endCol = Math.ceil(worldRight / CELL_SIZE);
+      const startRow = Math.floor(worldTop / CELL_SIZE);
+      const endRow = Math.ceil(worldBottom / CELL_SIZE);
+
+      // Track which cells are now visible
+      const currentVisibleCells = new Set<string>();
+
+      // Create or reuse elements for visible cells
+      for (let row = startRow; row <= endRow; row++) {
+        for (let col = startCol; col <= endCol; col++) {
+          const key = `${col},${row}`;
+          currentVisibleCells.add(key);
+
+          if (!elementPool.has(key)) {
+            const el = createElement(col, row);
+            canvas.appendChild(el);
+            elementPool.set(key, el);
+          }
+        }
+      }
+
+      // Remove elements that are no longer visible
+      for (const key of lastVisibleCells) {
+        if (!currentVisibleCells.has(key)) {
+          const el = elementPool.get(key);
+          if (el) {
+            el.remove();
+            elementPool.delete(key);
+          }
+        }
+      }
+
+      lastVisibleCells = currentVisibleCells;
+    }
+
+    function updateTransform() {
+      canvas.style.transform = `translate(${translateX}px, ${translateY}px)`;
+      updateVisibleItems();
+    }
+
+    // Initial position - center items on screen with some offset for header
+    // Start with negative offset to show items from near-origin
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    // Position so items fill the screen from near top-left
+    translateX = 20;
+    translateY = 70;
+    updateTransform();
+
+    function startDrag(clientX: number, clientY: number) {
+      isDragging = true;
+      hasDragged = false;
+      startX = clientX - translateX;
+      startY = clientY - translateY;
+      lastX = clientX;
+      lastY = clientY;
+      lastTime = performance.now();
+      velocityX = 0;
+      velocityY = 0;
+
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+
+      viewport.style.cursor = 'grabbing';
+    }
+
+    function drag(clientX: number, clientY: number) {
+      if (!isDragging) return;
+
+      const dx = clientX - lastX;
+      const dy = clientY - lastY;
+
+      if (!hasDragged && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
+        hasDragged = true;
+      }
+
+      if (!hasDragged) return;
+
+      const currentTime = performance.now();
+      const dt = currentTime - lastTime;
+
+      if (dt > 0) {
+        velocityX = (clientX - lastX) / dt * 16;
+        velocityY = (clientY - lastY) / dt * 16;
+      }
+
+      translateX = clientX - startX;
+      translateY = clientY - startY;
+
+      lastX = clientX;
+      lastY = clientY;
+      lastTime = currentTime;
+
+      updateTransform();
+    }
+
+    function endDrag() {
+      if (!isDragging) return;
+      isDragging = false;
+      viewport.style.cursor = 'grab';
+
+      if (hasDragged && (Math.abs(velocityX) > 0.5 || Math.abs(velocityY) > 0.5)) {
+        animateMomentum();
+      }
+
+      hasDragged = false;
+    }
+
+    function animateMomentum() {
+      const friction = 0.95;
+
+      velocityX *= friction;
+      velocityY *= friction;
+
+      translateX += velocityX;
+      translateY += velocityY;
+
+      updateTransform();
+
+      if (Math.abs(velocityX) > 0.1 || Math.abs(velocityY) > 0.1) {
+        animationId = requestAnimationFrame(animateMomentum);
+      }
+    }
+
+    // Mouse events
+    viewport.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      startDrag(e.clientX, e.clientY);
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      drag(e.clientX, e.clientY);
+    });
+
+    window.addEventListener('mouseup', endDrag);
+    window.addEventListener('mouseleave', endDrag);
+
+    // Touch events
+    viewport.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        e.preventDefault();
+        startDrag(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: false });
+
+    viewport.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1 && isDragging) {
+        e.preventDefault();
+        drag(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: false });
+
+    viewport.addEventListener('touchend', endDrag);
+    viewport.addEventListener('touchcancel', endDrag);
+
+    // Update on resize
+    window.addEventListener('resize', () => {
+      updateVisibleItems();
+    });
+
+    // Prevent context menu
+    viewport.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+    });
+  }
+</script>
