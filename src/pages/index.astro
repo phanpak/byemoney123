@@ -156,6 +156,59 @@ const categories = [
     <button class="action-btn">download all</button>
   </div>
 
+  <!-- Product Detail Modal -->
+  <div class="product-modal" id="product-modal">
+    <div class="modal-header-buttons">
+      <button class="modal-icon-btn" aria-label="Play audio">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M11 5L6 9H2V15H6L11 19V5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15.54 8.46C16.4774 9.39764 17.004 10.6692 17.004 11.995C17.004 13.3208 16.4774 14.5924 15.54 15.53" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="modal-icon-btn" aria-label="Share">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="5" r="3" stroke="currentColor" stroke-width="2"/>
+          <circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+          <circle cx="18" cy="19" r="3" stroke="currentColor" stroke-width="2"/>
+          <path d="M8.59 13.51L15.42 17.49M15.41 6.51L8.59 10.49" stroke="currentColor" stroke-width="2"/>
+        </svg>
+      </button>
+      <button class="modal-icon-btn modal-close-btn" aria-label="Close" id="modal-close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-content">
+      <div class="modal-image-container">
+        <img class="modal-image" id="modal-image" src="" alt="" />
+      </div>
+      <div class="modal-details">
+        <div class="modal-tags" id="modal-tags">
+          <!-- Tags will be populated by JS -->
+        </div>
+        <h2 class="modal-title" id="modal-title"></h2>
+        <p class="modal-description" id="modal-description"></p>
+        <div class="modal-actions">
+          <button class="modal-action-btn" id="back-to-grid">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Back to Grid</span>
+          </button>
+          <button class="modal-action-btn" id="download-image">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Download Image</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Pass product data to client-side JavaScript -->
   <script id="products-data" type="application/json" set:html={JSON.stringify(products)}></script>
 </Layout>
@@ -401,6 +454,220 @@ const categories = [
       font-size: 12px;
     }
   }
+
+  /* Product Detail Modal */
+  .product-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgb(254, 252, 247);
+    z-index: 200;
+    display: none;
+    padding: 32px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .product-modal.active {
+    display: flex;
+    opacity: 1;
+  }
+
+  .modal-header-buttons {
+    position: absolute;
+    top: 32px;
+    right: 32px;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+  }
+
+  .modal-icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 9999px;
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(0, 0, 0, 0.8);
+    transition: all 0.2s;
+  }
+
+  .modal-icon-btn:hover {
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  .modal-content {
+    display: flex;
+    width: 100%;
+    height: 100%;
+  }
+
+  .modal-image {
+    width: 500px;
+    height: 500px;
+    object-fit: contain;
+  }
+
+  .modal-image-container {
+    flex: 0 0 calc(50% - 0px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    position: relative;
+  }
+
+  .modal-details {
+    flex: 0 0 calc(50% - 0px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 32px;
+  }
+
+  .modal-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  :global(.modal-tag) {
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 2px 8px;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.8);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  :global(.modal-tag:hover) {
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  .modal-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: rgb(0, 0, 0);
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .modal-description {
+    font-size: 18px;
+    line-height: 28px;
+    color: rgba(0, 0, 0, 0.8);
+    margin-bottom: 24px;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  .modal-action-btn {
+    background: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+    border: none;
+    border-radius: 9999px;
+    padding: 8px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    height: 36px;
+  }
+
+  .modal-action-btn:hover {
+    background: rgb(30, 30, 30);
+    transform: scale(1.02);
+  }
+
+  /* Modal responsive styles */
+  @media (max-width: 1200px) {
+    .modal-image {
+      width: 400px;
+      height: 400px;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .modal-content {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-image-container {
+      flex: none;
+      margin-bottom: 24px;
+    }
+
+    .modal-image {
+      width: 300px;
+      height: 300px;
+    }
+
+    .modal-details {
+      flex: none;
+      text-align: center;
+      padding: 16px;
+      max-width: 500px;
+    }
+
+    .modal-tags {
+      justify-content: center;
+    }
+
+    .modal-actions {
+      justify-content: center;
+    }
+
+    .modal-title {
+      font-size: 28px;
+    }
+
+    .modal-description {
+      font-size: 16px;
+      line-height: 24px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .product-modal {
+      padding: 16px;
+    }
+
+    .modal-header-buttons {
+      top: 16px;
+      right: 16px;
+    }
+
+    .modal-image {
+      width: 250px;
+      height: 250px;
+    }
+
+    .modal-title {
+      font-size: 24px;
+    }
+
+    .modal-action-btn {
+      padding: 8px 16px;
+      font-size: 12px;
+    }
+  }
 </style>
 
 <script>
@@ -584,7 +851,11 @@ const categories = [
         animateMomentum();
       }
 
-      hasDragged = false;
+      // Delay reset of hasDragged so click handler can check it
+      // (click event fires after mouseup)
+      setTimeout(() => {
+        hasDragged = false;
+      }, 0);
     }
 
     function animateMomentum() {
@@ -642,6 +913,106 @@ const categories = [
     // Prevent context menu
     viewport.addEventListener('contextmenu', (e) => {
       e.preventDefault();
+    });
+
+    // Product Modal functionality
+    const modal = document.getElementById('product-modal');
+    const modalImage = document.getElementById('modal-image') as HTMLImageElement;
+    const modalTitle = document.getElementById('modal-title');
+    const modalDescription = document.getElementById('modal-description');
+    const modalTags = document.getElementById('modal-tags');
+    const modalClose = document.getElementById('modal-close');
+    const backToGrid = document.getElementById('back-to-grid');
+    const downloadImage = document.getElementById('download-image');
+
+    // Sample tags for products (in a real app, this would come from API)
+    const sampleTags = ['everyday life', 'objects', 'utility', 'illustration'];
+
+    // Generate a description based on the product name
+    function generateDescription(name: string): string {
+      return `A beautifully illustrated ${name.toLowerCase()} from the Thiings collection. This high-quality illustration can be used for presentations, designs, and creative projects.`;
+    }
+
+    // Open modal with product data
+    function openModal(product: {alt: string, src: string}) {
+      if (!modal || !modalImage || !modalTitle || !modalDescription || !modalTags) return;
+
+      // Use original src (higher resolutions may not be available)
+      modalImage.src = product.src;
+      modalImage.alt = product.alt;
+      modalTitle.textContent = product.alt;
+      modalDescription.textContent = generateDescription(product.alt);
+
+      // Generate tags
+      modalTags.innerHTML = sampleTags
+        .map(tag => `<span class="modal-tag">${tag}</span>`)
+        .join('');
+
+      // Show modal with animation
+      modal.style.display = 'flex';
+      // Force reflow for transition
+      modal.offsetHeight;
+      modal.classList.add('active');
+
+      // Prevent body scroll
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Close modal
+    function closeModal() {
+      if (!modal) return;
+
+      modal.classList.remove('active');
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 300);
+
+      // Restore body scroll
+      document.body.style.overflow = '';
+    }
+
+    // Event delegation for canvas item clicks
+    canvas.addEventListener('click', (e) => {
+      // Only handle click if we didn't drag
+      if (hasDragged) return;
+
+      const target = e.target as HTMLElement;
+      const canvasItem = target.closest('.canvas-item') as HTMLElement;
+
+      if (canvasItem) {
+        const img = canvasItem.querySelector('img') as HTMLImageElement;
+        if (img) {
+          const product = {
+            alt: img.alt,
+            src: img.src
+          };
+          openModal(product);
+        }
+      }
+    });
+
+    // Close modal events
+    modalClose?.addEventListener('click', closeModal);
+    backToGrid?.addEventListener('click', closeModal);
+
+    // Close on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal?.classList.contains('active')) {
+        closeModal();
+      }
+    });
+
+    // Download image functionality
+    downloadImage?.addEventListener('click', () => {
+      if (!modalImage) return;
+
+      const link = document.createElement('a');
+      link.href = modalImage.src;
+      link.download = `${modalImage.alt || 'thiings-image'}.png`;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     });
   }
 </script>
