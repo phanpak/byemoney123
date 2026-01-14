@@ -1,14 +1,18 @@
 {
-  "name": "bye-money",
+  "name": "thiings-co",
   "type": "module",
   "version": "1.0.0",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "test:oracle": "playwright test -c playwright.oracle.config.ts"
   },
   "dependencies": {
     "astro": "^5.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
   }
 }
